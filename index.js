@@ -15,6 +15,7 @@ import './app/404'
 import './app/base'
 
 import './app/default'
+import './app/connect'
 
 import './lib/router'
 import './lib/react'

@@ -54,6 +54,8 @@ inject('ctx', ({ HubContext }) => {
         })
       })
 
+      hub.on('page', (...args) => page(...args))
+
       page.start()
     }, [])
 

@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/y5labs/boss-control#readme",
   "dependencies": {
+  },
+  "devDependencies": {
     "@blueprintjs/core": "^4.0.0-alpha.0",
     "css-loader": "^6.2.0",
     "dotenv": "^10.0.0",
@@ -41,6 +43,7 @@
     "stylus": "^0.55.0",
     "stylus-loader": "^6.1.0",
     "webpack": "^5.52.0",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^4.8.0",
+    "@blueprintjs/icons": "^4.0.0-alpha.0"
   }
 }
