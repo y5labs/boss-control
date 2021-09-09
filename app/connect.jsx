@@ -1,7 +1,14 @@
 import inject from 'seacreature/lib/inject'
 import page from 'page'
 import { useContext } from 'react'
-import { Icon, FormGroup, InputGroup, AnchorButton } from '@blueprintjs/core'
+import {
+  Icon,
+  FormGroup,
+  InputGroup,
+  AnchorButton,
+  Button,
+  Intent
+} from '@blueprintjs/core'
 
 inject('pod', ({ HubContext, StateContext }) => {
   inject('route', ['/connect', p => () => {
@@ -44,7 +51,7 @@ inject('pod', ({ HubContext, StateContext }) => {
         </div>
         <div className="bp4-dialog-footer">
           <div className="bp4-dialog-footer-actions">
-            <button type="submit" className="bp4-button bp4-intent-primary">Connect</button>
+            <Button intent={Intent.SUCCESS}>Connect</Button>
           </div>
         </div>
       </div>

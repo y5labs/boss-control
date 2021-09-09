@@ -41,8 +41,8 @@ inject('pod', ({ HubContext, StateContext }) => {
           <tr>
             <th></th>
             <th></th>
-            <th colSpan="3">Processing</th>
-            <th colSpan="4">Issues</th>
+            <th className="d" colSpan="3">Processing</th>
+            <th className="d" colSpan="4">Issues</th>
             <th></th>
           </tr>
           <tr>
@@ -64,10 +64,10 @@ inject('pod', ({ HubContext, StateContext }) => {
               <Popover
                 content={
                   <Menu>
-                    <MenuItem icon="cross" intent={Intent.DANGER} text="Disconnect" />
+                    <MenuItem icon="cross" intent={Intent.DANGER} text="Disconnect from server" />
                   </Menu>}
                 position={Position.RIGHT_TOP}>
-                <Button icon="edit" minimal={true} />
+                <Button icon="cross" minimal={true} />
               </Popover>
             </td>
             <td>
