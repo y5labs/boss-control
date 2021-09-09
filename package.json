@@ -1,0 +1,46 @@
+{
+  "name": "boss-control",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --env NODE_ENV=production --env production --config ./lib/webpack-prod.js",
+    "dev": "webpack --env NODE_ENV=development --config ./lib/webpack-dev.js",
+    "start": "serve dist -s -l 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y5labs/boss-control.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/y5labs/boss-control/issues"
+  },
+  "homepage": "https://github.com/y5labs/boss-control#readme",
+  "dependencies": {
+    "@blueprintjs/core": "^4.0.0-alpha.0",
+    "css-loader": "^6.2.0",
+    "dotenv": "^10.0.0",
+    "esbuild-loader": "^2.15.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "mini-css-extract-plugin": "^2.2.2",
+    "modern-normalize": "^1.1.0",
+    "nodemon": "^2.0.12",
+    "numeral": "^2.0.6",
+    "odo-route": "^1.7.1",
+    "page": "^1.11.6",
+    "process": "^0.11.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "reconnecting-websocket": "^4.4.0",
+    "seacreature": "^2.17.0",
+    "serve": "^12.0.0",
+    "style-loader": "^3.2.1",
+    "stylus": "^0.55.0",
+    "stylus-loader": "^6.1.0",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
+  }
+}
