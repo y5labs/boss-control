@@ -19,6 +19,34 @@ import {
 } from '@blueprintjs/core'
 import numeral from 'numeral'
 import pagepro from 'pagepro'
+import { DateTime } from 'luxon'
+
+const stringify_nice = obj => JSON.stringify(obj)
+  .replaceAll('"', '')
+  .replaceAll('{', '{ ')
+  .replaceAll('}', ' }')
+  .replaceAll(':', ': ')
+  .replaceAll(',', ', ')
+  .slice(2, -2)
+
+const units = [
+  'year',
+  'month',
+  'week',
+  'day',
+  'hour',
+  'minute',
+  'second',
+]
+
+const timeAgo = date => {
+  let dateTime = DateTime.fromISO(date)
+  const diff = dateTime.diffNow().shiftTo(...units)
+  const unit = units.find((unit) => diff.get(unit) !== 0) || 'second'
+
+  const relativeFormatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+  return relativeFormatter.format(Math.trunc(diff.as(unit)), unit)
+}
 
 inject('pod', ({ HubContext, StateContext, BossContext }) => {
   inject('route', ['/server/:serverAddress/queue/:queueName/status/:status/page/:page/', p => () => {
@@ -236,15 +264,30 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
       <HTMLTable className="jobs selectable" condensed={true}>
         <thead>
           <tr>
+            <th></th>
             <th>ID</th>
+            <th>Activity</th>
             <th>Data</th>
           </tr>
         </thead>
         <tbody>
         {jobState.jobs.map(j => {
+          const id_small = `${j.id.slice(0, 6)}...${j.id.slice(-6)}`
           return <tr key={j.id}>
-            <td>{j.id}</td>
-            <td>{JSON.stringify(j.data)}</td>
+            <td>
+              <Icon icon="full-circle" className="boring" title={j.state} intent={
+                j.state == 'active'
+                ? Intent.SUCCESS
+                : ['retry', 'cancelled'].includes(j.state)
+                ? Intent.WARNING
+                : ['expired', 'failed'].includes(j.state)
+                ? Intent.DANGER
+                : null
+              } />
+            </td>
+            <td title={j.id}>{id_small}</td>
+            <td title={j.activity_at}>{timeAgo(j.activity_at)}</td>
+            <td className="data">{stringify_nice(j.data)}</td>
           </tr>
         })}
         </tbody>

@@ -26,6 +26,7 @@
     "esbuild-loader": "^2.15.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "luxon": "^2.0.2",
     "mini-css-extract-plugin": "^2.2.2",
     "modern-normalize": "^1.1.0",
     "nodemon": "^2.0.12",

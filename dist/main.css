@@ -10322,6 +10322,10 @@ table.bp4-html-table td.indent1 {
 table.bp4-html-table td.selected {
   background-color: rgba(191,204,214,0.3);
 }
+.d td.data,
+table.bp4-html-table td.data {
+  font-family: monospace;
+}
 table.bp4-html-table.selectable td {
   cursor: pointer;
 }
@@ -10375,6 +10379,9 @@ table.bp4-html-table.queues tbody tr:not(:first-child) td:nth-child(9) {
   padding-right: 0;
   border: none;
   outline: none;
+}
+.boring {
+  color: #ccc;
 }
 .page {
   margin: 20px auto;
