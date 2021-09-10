@@ -1,7 +1,7 @@
 import inject from 'seacreature/lib/inject'
-import sleep from 'seacreature/lib/sleep'
 import page from 'page'
 import { useContext } from 'react'
+import slugify from 'slugify'
 import {
   Tag,
   Intent,
@@ -32,12 +32,11 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
 
     const common = {
       round: true,
-      large: true,
-      interactive: true
+      large: true
     }
 
     return <div className="page">
-      <HTMLTable className="queues" condensed={true}>
+      <HTMLTable className="queues selectable" condensed={true}>
         <thead>
           <tr>
             <th></th>
@@ -79,6 +78,10 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           const disconnect = async e => {
             await hub.emit('disconnect from server', s)
           }
+          const select = (status = 'active', queue = null) => e => {
+            if (queue == null) return
+            page(`/server/${slugify(s.serverAddress)}/queue/${slugify(queue)}/status/${status}/page/1/`)
+          }
           return <tbody key={`server_${i}`}>
             <tr>
               <td>
@@ -106,13 +109,13 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   }
                 </Popover>
               </td>
-              <td>
-                <Tag
+              <td onClick={select()}>
+                <b><Tag
                   {...common}
                   minimal={true}
-                  className="invisible">{s.serverAddress.split('//')[1]}</Tag>
+                  className="invisible">{s.serverAddress.split('//')[1]}</Tag></b>
               </td>
-              <td className="d">
+              <td className="d" onClick={select('created')}>
               { totals.created
                 ? <Tag
                   {...common}
@@ -123,7 +126,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('active')}>
               { totals.active
                 ? <Tag
                   {...common}
@@ -134,7 +137,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('completed')}>
               { totals.completed
                 ? <Tag
                   {...common}
@@ -145,7 +148,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('retry')}>
               { totals.retry
                 ? <Tag
                   {...common}
@@ -156,7 +159,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('cancelled')}>
               { totals.cancelled
                 ? <Tag
                   {...common}
@@ -168,7 +171,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('expired')}>
               { totals.expired
                 ? <Tag
                   {...common}
@@ -179,7 +182,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('failed')}>
               { totals.failed > 0
                 ? <Tag
                   {...common}
@@ -190,7 +193,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 : ''
               }
               </td>
-              <td className="d">
+              <td className="d" onClick={select('archived')}>
               { totals.archived
                 ? <Tag
                   {...common}
@@ -206,13 +209,13 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
               return <tr key={`queue_${name}`}>
                 <td>
                 </td>
-                <td className="indent1">
+                <td className="indent1" onClick={select('active', name)}>
                   <Tag
                     {...common}
                     minimal={true}
                     className="invisible">{name}</Tag>
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('created', name)}>
                 { states.created
                   ? <Tag
                     {...common}
@@ -223,7 +226,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('active', name)}>
                 { states.active
                   ? <Tag
                     {...common}
@@ -234,7 +237,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('completed', name)}>
                 { states.completed
                   ? <Tag
                     {...common}
@@ -245,7 +248,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('retry', name)}>
                 { states.retry
                   ? <Tag
                     {...common}
@@ -256,7 +259,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('cancelled', name)}>
                 { states.cancelled
                   ? <Tag
                     {...common}
@@ -268,7 +271,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('expired', name)}>
                 { states.expired
                   ? <Tag
                     {...common}
@@ -279,7 +282,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('failed', name)}>
                 { states.failed > 0
                   ? <Tag
                     {...common}
@@ -290,7 +293,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   : ''
                 }
                 </td>
-                <td className="d">
+                <td className="d" onClick={select('archived', name)}>
                 { states.archived
                   ? <Tag
                     {...common}

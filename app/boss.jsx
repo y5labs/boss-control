@@ -49,6 +49,11 @@ inject('ctx', ({ HubContext, StateContext }) => {
         const server = Array.from(servers.values()).find(s => s.socket == socket)
         if (server) server.socket.send('login', server.server)
       })
+      hub.on('load jobs', ({ server, queue, statuses, page }) => {
+        const bossServer = Array.from(servers.values()).find(s => s.server == server)
+        if (!bossServer) return
+        bossServer.socket.send('load jobs', { queue, statuses, page })
+      })
 
       const handle = setInterval(() => {
         setBossState(new Map(Array.from(servers.entries())))

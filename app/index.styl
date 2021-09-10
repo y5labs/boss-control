@@ -31,9 +31,18 @@ table.bp4-html-table
     text-align right
   td.indent1
     padding-left 24px
+  td.selected
+    background-color rgba(191,204,214,.3)
+
+table.bp4-html-table.selectable
+  td
+    cursor pointer
+    &:hover
+      background-color rgba(191,204,214,.3)
 
 table.bp4-html-table.queues
   border 2px solid #666
+  margin-top 14px
   margin-bottom 14px
   thead tr:nth-child(1) th,
   thead tr:nth-child(2) th:nth-child(2)
@@ -61,7 +70,7 @@ table.bp4-html-table.queues
     td:nth-child(9)
       box-shadow: inset -1px 0 0 0 rgba(16, 22, 26, 0.15)
 
-.bp4-tag.bp4-minimal.bp4-interactive.invisible
+.bp4-tag.bp4-minimal.invisible
   &,
   &:hover,
   &:active,
