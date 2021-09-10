@@ -18,6 +18,7 @@ import {
   Tooltip
 } from '@blueprintjs/core'
 import numeral from 'numeral'
+import pagepro from 'pagepro'
 
 inject('pod', ({ HubContext, StateContext, BossContext }) => {
   inject('route', ['/server/:serverAddress/queue/:queueName/status/:status/page/:page/', p => () => {
@@ -25,9 +26,9 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
     const state = useContext(StateContext)
     const bossState = useContext(BossContext)
     const [jobState, setJobState] = useState({
-      page: 1,
-      page_size: 25,
-      page_total: 0,
+      currentpage: 1,
+      itemsperpage: 25,
+      totalitems: 0,
       jobs: []
     })
 
@@ -37,7 +38,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
     }
 
     const { serverAddress, queueName, status } = p.params
-    const currentPage = parseInt(p.params.page)
+    const currentpage = parseInt(p.params.page)
     const statuses = status.split(',')
 
     const s = state.servers.find(s => slugify(s.serverAddress) == serverAddress)
@@ -58,11 +59,8 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
     const [name, totals] = queue
 
     useEffect(hub.effect(hub => {
-      hub.emit('load jobs', { server: s, queue: name, statuses, page: currentPage })
-      hub.on('loaded jobs', jobState => {
-        console.log(jobState)
-        setJobState(jobState)
-      })
+      hub.emit('load jobs', { server: s, queue: name, statuses, currentpage })
+      hub.on('loaded jobs', setJobState)
     }), [])
 
     const select = status => e => {
@@ -71,11 +69,21 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
         const result = [...statuses]
         result.splice(statuses.indexOf(status), 1)
         if (result.length == 0)
-          return ['active']
+          return ['null']
         return result
       })()
       page(`/server/${slugify(s.serverAddress)}/queue/${slugify(name)}/status/${new_status.join(',')}/page/1/`)
     }
+
+    const back = e => {
+      page(`/server/${slugify(s.serverAddress)}/queue/${slugify(name)}/status/${status}/page/${currentpage - 1}/`)
+    }
+
+    const forward = e => {
+      page(`/server/${slugify(s.serverAddress)}/queue/${slugify(name)}/status/${status}/page/${currentpage + 1}/`)
+    }
+
+    const pagination = pagepro(jobState)
 
     const common = {
       round: true,
@@ -215,7 +223,32 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           </tr>
         </tbody>
       </HTMLTable>
-      {jobState.jobs.length}
+      <div className="split">
+        <div></div>
+        <div>
+          <AnchorButton minimal={true} className={`${pagination.hasprevpage ? '' : 'invisible'}`} onClick={back}>Back</AnchorButton>
+          {' '}
+          Page { pagination.currentpage } / { pagination.totalpages }
+          {' '}
+          <AnchorButton minimal={true} className={`${pagination.hasnextpage ? '' : 'invisible'}`} onClick={forward}>Forward</AnchorButton>
+        </div>
+      </div>
+      <HTMLTable className="jobs selectable" condensed={true}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+        {jobState.jobs.map(j => {
+          return <tr key={j.id}>
+            <td>{j.id}</td>
+            <td>{JSON.stringify(j.data)}</td>
+          </tr>
+        })}
+        </tbody>
+      </HTMLTable>
     </div>
   }])
 })

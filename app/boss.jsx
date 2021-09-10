@@ -49,10 +49,10 @@ inject('ctx', ({ HubContext, StateContext }) => {
         const server = Array.from(servers.values()).find(s => s.socket == socket)
         if (server) server.socket.send('login', server.server)
       })
-      hub.on('load jobs', ({ server, queue, statuses, page }) => {
+      hub.on('load jobs', ({ server, queue, statuses, currentpage }) => {
         const bossServer = Array.from(servers.values()).find(s => s.server == server)
         if (!bossServer) return
-        bossServer.socket.send('load jobs', { queue, statuses, page })
+        bossServer.socket.send('load jobs', { queue, statuses, currentpage })
       })
 
       const handle = setInterval(() => {
