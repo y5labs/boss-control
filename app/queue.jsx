@@ -15,7 +15,9 @@ import {
   Popover,
   Icon,
   Position,
-  Tooltip
+  Tooltip,
+  Spinner,
+  InputGroup
 } from '@blueprintjs/core'
 import numeral from 'numeral'
 import pagepro from 'pagepro'
@@ -57,7 +59,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
       currentpage: 1,
       itemsperpage: 25,
       totalitems: 0,
-      jobs: []
+      jobs: null
     })
 
     if (state.servers.length == 0) {
@@ -87,8 +89,25 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
     const [name, totals] = queue
 
     useEffect(hub.effect(hub => {
+      let waiting = true
+      let last_hurrah = null
       hub.emit('load jobs', { server: s, queue: name, statuses, currentpage })
-      hub.on('loaded jobs', setJobState)
+      hub.on('filter jobs', params => {
+        if (waiting == true) {
+          last_hurrah = params
+          return // debounce
+        }
+        hub.emit('load jobs', params)
+      })
+      hub.on('loaded jobs', res => {
+        waiting = false
+        setJobState(res)
+        if (last_hurrah != null) {
+          const params = last_hurrah
+          last_hurrah = null
+          hub.emit('filter jobs', params)
+        }
+      })
     }), [])
 
     const select = status => e => {
@@ -251,47 +270,70 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           </tr>
         </tbody>
       </HTMLTable>
-      <div className="split">
-        <div></div>
-        <div>
-          <AnchorButton minimal={true} className={`${pagination.hasprevpage ? '' : 'invisible'}`} onClick={back}>Back</AnchorButton>
-          {' '}
-          Page { pagination.currentpage } / { pagination.totalpages }
-          {' '}
-          <AnchorButton minimal={true} className={`${pagination.hasnextpage ? '' : 'invisible'}`} onClick={forward}>Forward</AnchorButton>
+      {jobState.jobs
+        ? <>
+        <div className="split">
+          <div>
+            <InputGroup
+              style={{ width: '400px' }}
+              type="search"
+              leftIcon="filter"
+              placeholder="Type to filter data..."
+              onChange={e => {
+                hub.emit('filter jobs', {
+                  server: s, queue: name, statuses, currentpage: 1, search_term: e.target.value
+                })
+              }}
+              />
+          </div>
+          <div>
+            <AnchorButton minimal={true} className={`${pagination.hasprevpage ? '' : 'invisible'}`} onClick={back}>Back</AnchorButton>
+            {' '}
+            Page { pagination.currentpage } / { pagination.totalpages }
+            {' '}
+            <AnchorButton minimal={true} className={`${pagination.hasnextpage ? '' : 'invisible'}`} onClick={forward}>Forward</AnchorButton>
+          </div>
         </div>
-      </div>
-      <HTMLTable className="jobs selectable" condensed={true}>
-        <thead>
-          <tr>
-            <th></th>
-            <th>ID</th>
-            <th>Activity</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-        {jobState.jobs.map(j => {
-          const id_small = `${j.id.slice(0, 6)}...${j.id.slice(-6)}`
-          return <tr key={j.id}>
-            <td>
-              <Icon icon="full-circle" className="boring" title={j.state} intent={
-                j.state == 'active'
-                ? Intent.SUCCESS
-                : ['retry', 'cancelled'].includes(j.state)
-                ? Intent.WARNING
-                : ['expired', 'failed'].includes(j.state)
-                ? Intent.DANGER
-                : null
-              } />
-            </td>
-            <td title={j.id}>{id_small}</td>
-            <td title={j.activity_at}>{timeAgo(j.activity_at)}</td>
-            <td className="data">{stringify_nice(j.data)}</td>
-          </tr>
-        })}
-        </tbody>
-      </HTMLTable>
+        <HTMLTable className="jobs selectable" condensed={true}>
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Activity</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+          {jobState.jobs.map(j => {
+            const id_small = `${j.id.slice(0, 6)}...${j.id.slice(-6)}`
+            return <tr key={j.id}>
+              <td>
+                <Icon icon="full-circle" className="boring" title={j.state} intent={
+                  j.state == 'active'
+                  ? Intent.SUCCESS
+                  : ['retry', 'cancelled'].includes(j.state)
+                  ? Intent.WARNING
+                  : ['expired', 'failed'].includes(j.state)
+                  ? Intent.DANGER
+                  : null
+                } />
+              </td>
+              <td
+                title={j.id}
+                onClick={e => navigator.clipboard.writeText(j.id)}>{id_small}</td>
+              <td
+                title={j.activity_at}
+                onClick={e => navigator.clipboard.writeText(j.activity_at)}>{timeAgo(j.activity_at)}</td>
+              <td
+                title={JSON.stringify(j.data, null, 2)}
+                onClick={e => navigator.clipboard.writeText(JSON.stringify(j.data, null, 2))}
+                className="data">{stringify_nice(j.data)}</td>
+            </tr>
+          })}
+          </tbody>
+        </HTMLTable>
+        </>
+        : <Spinner size={Spinner.SIZE_LARGE} /> }
     </div>
   }])
 })

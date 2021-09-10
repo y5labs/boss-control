@@ -22,7 +22,6 @@ inject('ctx', ({ HubContext, StateContext }) => {
     const [bossState, setBossState] = useState(servers)
 
     useEffect(hub.effect(hub => {
-      // TODO: diff against currently running servers, work out which ones to disable
       const seen = new Set()
       for (const server of state.servers) {
         seen.add(server.serverAddress)
@@ -49,10 +48,10 @@ inject('ctx', ({ HubContext, StateContext }) => {
         const server = Array.from(servers.values()).find(s => s.socket == socket)
         if (server) server.socket.send('login', server.server)
       })
-      hub.on('load jobs', ({ server, queue, statuses, currentpage }) => {
+      hub.on('load jobs', ({ server, queue, statuses, currentpage, search_term = null }) => {
         const bossServer = Array.from(servers.values()).find(s => s.server == server)
         if (!bossServer) return
-        bossServer.socket.send('load jobs', { queue, statuses, currentpage })
+        bossServer.socket.send('load jobs', { queue, statuses, currentpage, search_term })
       })
 
       const handle = setInterval(() => {

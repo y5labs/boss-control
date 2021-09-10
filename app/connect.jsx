@@ -27,7 +27,6 @@ inject('pod', ({ HubContext, StateContext }) => {
       page('/')
     }
 
-    // TODO: check to see if any servers are specified, if none remove close button.
     return <div className="bp4-dialog-container">
       <div className="bp4-dialog">
         <div className="bp4-dialog-header">
