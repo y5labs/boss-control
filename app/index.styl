@@ -21,10 +21,16 @@ html
     &:not(:last-child)
       margin-right 14px
 
+.invisivle
+  display contents
+
 .d,
-table.bp4-html-table td.d,,
-table.bp4-html-table th.d
-  text-align right
+table.bp4-html-table
+  td.d,
+  th.d
+    text-align right
+  td.indent1
+    padding-left 24px
 
 table.bp4-html-table.queues
   border 2px solid #666
@@ -69,3 +75,5 @@ table.bp4-html-table.queues
 .page
   margin 20px auto
   width fit-content
+
+

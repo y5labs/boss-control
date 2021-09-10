@@ -7,6 +7,7 @@ import {
   useState
 } from 'react'
 import inject from 'seacreature/lib/inject'
+import sleep from 'seacreature/lib/sleep'
 
 inject('ctx', ({ HubContext }) => {
   const RouterContext = createContext()
@@ -49,8 +50,11 @@ inject('ctx', ({ HubContext }) => {
             next()
           })
           if (callednext) return
-          setState(() => result)
-          hub.emit('navigate', context, result)
+          ;(async () => {
+            await sleep(10)
+            setState(() => result)
+            await hub.emit('navigate', context, result)
+          })()
         })
       })
 

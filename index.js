@@ -6,11 +6,13 @@
 import './lib/hub'
 
 import './lib/bp4-hotkeys'
+import './app/websocket'
 
 import './components/loading'
 
 import './app/index.styl'
 import './app/state'
+import './app/boss'
 import './app/404'
 import './app/base'
 

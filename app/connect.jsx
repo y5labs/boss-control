@@ -1,6 +1,6 @@
 import inject from 'seacreature/lib/inject'
 import page from 'page'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import {
   Icon,
   FormGroup,
@@ -15,35 +15,45 @@ inject('pod', ({ HubContext, StateContext }) => {
     const hub = useContext(HubContext)
     const state = useContext(StateContext)
 
+    const [server, setServer] = useState({
+      serverAddress: '',
+      apiKey: '',
+      apiSecret: ''
+    })
+
+    const showClose = state.servers.length > 0
+    const submit = async e => {
+      await hub.emit('connect to server', server)
+      page('/')
+    }
+
     // TODO: check to see if any servers are specified, if none remove close button.
     return <div className="bp4-dialog-container">
       <div className="bp4-dialog">
         <div className="bp4-dialog-header">
           <h4 className="bp4-heading">Connect to a Boss Server</h4>
-          <AnchorButton icon="cross" minimal={true} onClick={e => page('/')} />
+          {showClose && <AnchorButton icon="cross" minimal={true} onClick={e => page('/')} />}
         </div>
         <div className="bp4-dialog-body">
-          <FormGroup
-            label="Server address"
-            labelFor="server-address">
+          <FormGroup label="Server address" labelFor="server-address">
             <InputGroup
               id="server-address"
+              type="url"
+              onChange={e => setServer(s => ({ ...s, serverAddress: e.target.value }))}
               placeholder="wss://secure-boss-server.example.com" />
           </FormGroup>
           <div className="divide">
-            <FormGroup
-              label="API Key"
-              labelFor="api-key">
+            <FormGroup label="API Key" labelFor="api-key">
               <InputGroup
                 id="api-key"
+                onChange={e => setServer(s => ({ ...s, apiKey: e.target.value }))}
                 placeholder="abc123"
                 fill={true} />
             </FormGroup>
-            <FormGroup
-              label="One time code"
-              labelFor="otp-token">
+            <FormGroup label="API Secret" labelFor="api-secret">
               <InputGroup
-                id="otp-token"
+                id="api-secret"
+                onChange={e => setServer(s => ({ ...s, apiSecret: e.target.value }))}
                 placeholder="123456"
                 fill={true} />
             </FormGroup>
@@ -51,7 +61,7 @@ inject('pod', ({ HubContext, StateContext }) => {
         </div>
         <div className="bp4-dialog-footer">
           <div className="bp4-dialog-footer-actions">
-            <Button intent={Intent.SUCCESS}>Connect</Button>
+            <Button intent={Intent.SUCCESS} onClick={submit}>Connect</Button>
           </div>
         </div>
       </div>
