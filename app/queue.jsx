@@ -139,7 +139,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
 
     return <div className="page">
       <div className="split">
-        <div></div>
+        <h2>{s.serverAddress.split('//')[1]}</h2>
         <AnchorButton
           icon="cross"
           large={true}
@@ -157,7 +157,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           </tr>
           <tr>
             <th></th>
-            <th>{s.serverAddress.split('//')[1]}</th>
+            <th></th>
             <th className="d">Created</th>
             <th className="d">Active</th>
             <th className="d">Completed</th>

@@ -50,10 +50,17 @@ table.bp4-html-table.queues
   margin-bottom 14px
 
 table.bp4-html-table.queues
+  tbody tr:first-child td
+    background-color rgba(191,204,214,.3)
+    cursor inherit
+    font-weight bold
+    &:nth-child(2)
+      .bp4-large
+        font-size 18px
   thead tr:nth-child(1) th,
   thead tr:nth-child(2) th:nth-child(2)
     font-weight bold
-    font-size 18px
+    font-size 16px
   thead tr th
     font-weight normal
   tbody td:nth-child(2),

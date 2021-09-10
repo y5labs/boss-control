@@ -47,7 +47,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           </tr>
           <tr>
             <th></th>
-            <th>Queue</th>
+            <th></th>
             <th className="d">Created</th>
             <th className="d">Active</th>
             <th className="d">Completed</th>
@@ -115,7 +115,15 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                   minimal={true}
                   className="invisible">{s.serverAddress.split('//')[1]}</Tag></b>
               </td>
-              <td className="d" onClick={select('created')}>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              {/*<td className="d" onClick={select('created')}>
               { totals.created
                 ? <Tag
                   {...common}
@@ -203,7 +211,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 </Tag>
                 : ''
               }
-              </td>
+              </td>*/}
             </tr>
             {queues.map(([name, states]) => {
               return <tr key={`queue_${name}`}>
