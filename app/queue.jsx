@@ -97,6 +97,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
           })
           hub.on('loaded jobs', res => {
             waiting = false
+            console.log('Loaded Jobs:', res)
             setJobState(res)
             if (last_hurrah != null) {
               const params = last_hurrah
@@ -151,6 +152,9 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 <th className='d' colSpan='4'>
                   Issues
                 </th>
+                <th className='d' colSpan='4'>
+                  Archived
+                </th>
                 <th></th>
               </tr>
               <tr>
@@ -160,6 +164,10 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                 <th className='d'>Active</th>
                 <th className='d'>Completed</th>
                 <th className='d'>Retry</th>
+                <th className='d'>Cancelled</th>
+                <th className='d'>Expired</th>
+                <th className='d'>Failed</th>
+                <th className='d'>Completed</th>
                 <th className='d'>Cancelled</th>
                 <th className='d'>Expired</th>
                 <th className='d'>Failed</th>
@@ -240,10 +248,40 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                     ''
                   )}
                 </td>
-                <td className={`d ${statuses.includes('archived') ? 'selected' : ''}`} onClick={select('archived')}>
-                  {totals.archived ? (
-                    <Tag {...common} minimal={true} className='invisible'>
-                      {numeral(totals.archived).format('0,0')}
+                <td
+                  className={`d ${statuses.includes('archived_completed') ? 'selected' : ''}`}
+                  onClick={select('archived_completed')}
+                >
+                  {totals.archived_completed ? (
+                    <Tag {...common} icon='archive' intent={Intent.SUCCESS}>
+                      {numeral(totals.archived_completed).format('0,0')}
+                    </Tag>
+                  ) : (
+                    ''
+                  )}
+                </td>
+                <td className='d' onClick={select('archived_cancelled', name)}>
+                  {totals.archived_cancelled ? (
+                    <Tag {...common} icon='archive' intent={Intent.WARNING}>
+                      {numeral(totals.archived_cancelled).format('0,0')}
+                    </Tag>
+                  ) : (
+                    ''
+                  )}
+                </td>
+                <td className='d' onClick={select('archived_expired', name)}>
+                  {totals.archived_expired ? (
+                    <Tag {...common} icon='archive' intent={Intent.DANGER}>
+                      {numeral(totals.archived_expired).format('0,0')}
+                    </Tag>
+                  ) : (
+                    ''
+                  )}
+                </td>
+                <td className='d' onClick={select('archived_failed', name)}>
+                  {totals.archived_failed ? (
+                    <Tag {...common} icon='archive' intent={Intent.DANGER}>
+                      {numeral(totals.archived_failed).format('0,0')}
                     </Tag>
                   ) : (
                     ''

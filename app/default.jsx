@@ -73,7 +73,6 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
             </thead>
             {state.servers.map((s, i) => {
               const boss = bossState.get(s.serverAddress)
-              console.log('Boss:', boss)
               const { queues, totals, socketState, message } = (() => {
                 if (!boss || !boss.state || !boss.state.special)
                   return {
@@ -311,7 +310,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                             ''
                           )}
                         </td>
-                        <td className='d' onClick={select('archived', name)}>
+                        <td className='d' onClick={select('archived_completed', name)}>
                           {states.archived_completed ? (
                             <Tag {...common} icon='archive' intent={Intent.SUCCESS}>
                               {numeral(states.archived_completed).format('0,0')}
@@ -320,7 +319,7 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                             ''
                           )}
                         </td>
-                        <td className='d' onClick={select('archived', name)}>
+                        <td className='d' onClick={select('archived_cancelled', name)}>
                           {states.archived_cancelled ? (
                             <Tag {...common} icon='archive' intent={Intent.WARNING}>
                               {numeral(states.archived_cancelled).format('0,0')}
@@ -329,16 +328,16 @@ inject('pod', ({ HubContext, StateContext, BossContext }) => {
                             ''
                           )}
                         </td>
-                        <td className='d' onClick={select('archived', name)}>
+                        <td className='d' onClick={select('archived_expired', name)}>
                           {states.archived_expired ? (
-                            <Tag {...common} icon='archive' intent={Intent.WARNING}>
+                            <Tag {...common} icon='archive' intent={Intent.DANGER}>
                               {numeral(states.archived_expired).format('0,0')}
                             </Tag>
                           ) : (
                             ''
                           )}
                         </td>
-                        <td className='d' onClick={select('archived', name)}>
+                        <td className='d' onClick={select('archived_failed', name)}>
                           {states.archived_failed ? (
                             <Tag {...common} icon='archive' intent={Intent.DANGER}>
                               {numeral(states.archived_failed).format('0,0')}
